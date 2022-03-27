@@ -6,8 +6,9 @@
     >
       <v-card width="500">
         <v-card-title>
-          <span class="text-h5">{{isCreate ? '创建': '编辑'}}扩展</span>
+          <span class="text-h5">{{isCreate ? '添加': '编辑'}}扩展</span>
         </v-card-title>
+        <p class="grey">Tips: 正常情况下会从扩展文件内自动获取，无需手动输入</p>
         <v-form @submit="saveExtension()">
           <v-card-text>
                 <v-text-field
@@ -137,3 +138,9 @@ export default {
     }),
 }
 </script>
+<style>
+.grey {
+  margin: 0.1em 1em;
+  color: #999;
+}
+</style>

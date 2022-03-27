@@ -41,7 +41,7 @@
       </tbody>
     </template>
   </v-table>
-  <extension-edit-dialog ref='dialog' :onSave="getExtension()" />
+  <extension-edit-dialog ref='dialog' @onSave="getExtension()" />
 </template>
 
 
@@ -69,6 +69,10 @@ export default {
         async handleDelete(item) {
           if (!confirm(`你确定要删除扩展”${item.name}“吗？`)) return;
           const response = await fetch('api/DeleteExtension', {
+            method: 'post',
+            headers: {
+              'content-type': 'application/json'
+            },
             body: JSON.stringify({
               id: item.id
             })
