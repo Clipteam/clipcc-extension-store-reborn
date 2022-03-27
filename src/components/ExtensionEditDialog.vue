@@ -42,6 +42,7 @@
                     variant="underlined"
                     accept=".ccx"
                     v-model="extensionFile"
+                    @change="readExtension()"
                     label="扩展文件"
                 ></v-file-input>
           </v-card-text>
@@ -69,8 +70,11 @@
 </template>
 
 <script>
+import JSZip from 'jszip';
+
 export default {
     expose: ['openDialog'],
+    emits: ['onSave'],
     name: 'extension-edit-dialog',
     methods: {
         openDialog(item, isCreate) {
@@ -80,6 +84,20 @@ export default {
             if (!isCreate) {
               this.extension = item
             }
+        },
+        async readExtension() {
+          if (!this.extensionFile) return;
+          try {
+            const extensionFile = await this.extensionFile[0].arrayBuffer()
+            const zip = await JSZip.loadAsync(extensionFile)
+            const info = await zip.file('info.json').async('string')
+            const infoJson = JSON.parse(info);
+            this.extension.extensionId = infoJson.id;
+            this.extension.author = infoJson.author;
+            this.extension.version = infoJson.version;
+          } catch (err) {
+            console.error(err)
+          }
         },
         async saveExtension() {
             this.dialogStatus = 'SUBMITING'
