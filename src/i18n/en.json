@@ -1,8 +1,12 @@
 {
     "title": "ClipCC Extension Store",
     "install": "Install",
+    "installing": "Installing...",
     "installed": "Installed",
-    "loading": "Loading",
+    "loading": "Loading...",
+    "OK": "OK",
     "author": "Author",
-    "version": "Version"
+    "version": "Version",
+    "extension-install-fail": "Extension {extension} install failed!",
+    "error-detail": "Error Detail"
 }

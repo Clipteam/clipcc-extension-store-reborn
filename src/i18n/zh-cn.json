@@ -2,7 +2,11 @@
     "title": "ClipCC扩展商店",
     "install": "安装",
     "installed": "已安装",
+    "installing": "安装中...",
     "loading": "加载中...",
     "author": "作者",
-    "version": "版本"
+    "version": "版本",
+    "OK": "好的",
+    "extension-install-fail": "扩展{extension}安装失败！",
+    "error-detail": "错误详情"
 }

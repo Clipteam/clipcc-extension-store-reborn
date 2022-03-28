@@ -12,37 +12,61 @@
                 <v-btn variant="outlined" v-if="cardStatus === 'LOADING'" disabled>{{t('loading')}}</v-btn>
                 <v-btn variant="outlined" v-else-if="cardStatus === 'INSTALLED'" disabled>{{t('installed')}}</v-btn>
                 <v-btn variant="outlined" v-else-if="cardStatus === 'INSTALLING'" disabled>{{t('installing')}}</v-btn>
-                <v-btn variant="outlined" v-else>{{t('install')}}</v-btn>
+                <v-btn variant="outlined" @click="handleInstall()" v-else>{{t('install')}}</v-btn>
             </div>
         </div>
     </v-card>
+    <extension-add-fail-dialog ref='dialog' />
 </template>
 <script>
 import { useI18n } from "vue-i18n"
+import ExtensionAddFailDialog from "./ExtensionAddFailDialog.vue"
+
 export default {
     name: 'extension-card',
     props: {
         extension: Object
     },
+    components: {
+        ExtensionAddFailDialog
+    },
     data: () => ({
         cardStatus: 'LOADING'
     }),
-    mounted: () => {
-        // await this.fetchInstalledExtension()
+    mounted() {
+        this.extensionChannel = new BroadcastChannel('extension');
+        this.extensionChannel.postMessage({action: 'get'})
+        this.extensionChannel.addEventListener('message', this.fetchInstalledExtension)
+    },
+    unmounted(){
+        this.extensionChannel.removeEventListener('message', this.fetchInstalledExtension)
     },
     setup() {
         const { locale, t } = useI18n()
         return { locale, t }
     },
     methods: {
-        fetchInstalledExtension () {
-            return new Promise((resolve, reject) => {
-                const extensionChannel = BroadcastChannel('extension')
-                extensionChannel.postMessage({action: 'get'})
-                extensionChannel.addEventListener('message', event => {
-                    console.log(event);
-                })
-            })
+        fetchInstalledExtension (event) {
+            if (event.data.action === 'tell') {
+                if (event.data.data.includes(this.extension.extensionId)) {
+                    this.cardStatus = 'INSTALLED'
+                } else {
+                    this.cardStatus = 'NOTINSTALL'
+                }
+            } else if (event.data.action === 'addSuccess' && event.data.extensionId === this.extension.extensionId) {
+                this.cardStatus = 'INSTALLED'
+            } else if (event.data.action === 'addFail' && event.data.extensionId === this.extension.extensionId) {
+                this.$refs.dialog.openDialog(this.extension.name, event.data.error)
+                this.cardStatus = 'NOTINSTALL'
+            }
+        },
+        handleInstall() {
+            this.cardStatus = 'INSTALLING'
+            this.extensionChannel.postMessage({
+                action: 'add',
+                extension: this.extension.extensionId,
+                download: `${location.origin}${location.pathname}extension/${this.extension.filename}`
+            });
         }
     }
 }
