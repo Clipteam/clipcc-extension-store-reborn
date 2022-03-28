@@ -17,7 +17,7 @@ const i18n = createI18n({
   messages
 })
 
-loadFonts()
+// loadFonts()
 
 const app = createApp(App);
 app.use(router);

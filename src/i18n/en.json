@@ -8,5 +8,7 @@
     "author": "Author",
     "version": "Version",
     "extension-install-fail": "Extension {extension} install failed!",
-    "error-detail": "Error Detail"
+    "error-detail": "Error Detail",
+    "loadfail": "load failed",
+    "notopener": "Please open this page from within the editor to install extensions"
 }

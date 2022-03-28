@@ -13,13 +13,13 @@ let db;
 
 
 export async function getExtension(req, res) {
-    if (!db) Error('database not initialize!')
+    if (!db) return res.status(500).json({error:'database not initialize!'})
     const dbdata = await db.all("SELECT * FROM extension");
     return res.json(dbdata);
 }
 
 export async function saveExtension(req, res) {
-    if (!db) Error('database not initialize!')
+    if (!db) return res.status(500).json({error:'database not initialize!'})
     if (!userIsLogin(req)) return res.status(403).json({error:'not login'})
     const body = req.body
     const file = req.file
@@ -69,12 +69,10 @@ export async function login(req, res) {
     }
     try {
         const user = await db.get('SELECT * FROM user WHERE username = ?', username)
-        console.log(user)
         const result = await bcrypt.compare(password, user.password);
-        if (!result) Error('password wrong')
+        if (!result) throw new Error('password wrong');
         res.cookie('user', user.id, {signed: true})
     } catch (err) {
-        console.log(err)
         return res.status(403).json({error: 'username or password wrong'})
     }
     return res.json({messgae: 'success'})

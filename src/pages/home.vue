@@ -1,4 +1,5 @@
 <template>
+    <v-alert type="warning" v-if="!opener">{{ t('notopener') }}</v-alert>
     <h1 v-if="loadingStatus === 'LOADING'">{{ t('loading') }}</h1>
     <h1 v-else-if="loadingStatus === 'ERROR'">{{ t('loadfail') }}</h1>
     <extension-card v-for="item in extension" :key="item.id" :extension="item" />
@@ -27,9 +28,9 @@ export default {
             .catch(err => {
                 this.loadingStatus = 'ERROR';
             })
-            
     },
     data: () => ({
+        opener: window.opener,
         loadingStatus: 'LOADING',
         extension: []
     }),
