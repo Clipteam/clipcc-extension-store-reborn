@@ -35,8 +35,8 @@ export default {
     }),
     mounted() {
         this.extensionChannel = new BroadcastChannel('extension');
-        this.extensionChannel.postMessage({action: 'get'})
         this.extensionChannel.addEventListener('message', this.fetchInstalledExtension)
+        this.extensionChannel.postMessage({action: 'get'})
     },
     unmounted(){
         this.extensionChannel.removeEventListener('message', this.fetchInstalledExtension)
@@ -47,6 +47,7 @@ export default {
     },
     methods: {
         fetchInstalledExtension (event) {
+            console.log('[BroadcastChannel] event(%s) %o', event.data.action, event.data);
             if (event.data.action === 'tell') {
                 if (event.data.data.includes(this.extension.extensionId)) {
                     this.cardStatus = 'INSTALLED'
