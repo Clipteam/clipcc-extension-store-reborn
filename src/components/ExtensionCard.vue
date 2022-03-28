@@ -86,7 +86,7 @@ export default {
     flex-direction: column;
     padding: 0.5em 0;
     span {
-        font-size: 0.35em;
+        font-size: 0.65rem;
         color: rgba(0, 0, 0, 0.6);
     }
 }
