@@ -13,6 +13,7 @@
           <v-card-text>
                 <v-text-field
                     label="扩展ID"
+                    autocomplete="off"
                     variant="underlined"
                     :rules="[v => !!v || '请输入扩展ID']"
                     v-model="extension.extensionId"
@@ -22,11 +23,13 @@
                     label="扩展名"
                     :rules="[v => !!v || '请输入扩展名']"
                     variant="underlined"
+                    autocomplete="off"
                     v-model="extension.name"
                     required
                 ></v-text-field>
                 <v-text-field
                     label="作者"
+                    autocomplete="off"
                     :rules="[v => !!v || '请输入作者']"
                     variant="underlined"
                     v-model="extension.author"
@@ -34,6 +37,7 @@
                 ></v-text-field>
                 <v-text-field
                     label="版本"
+                    autocomplete="off"
                     :rules="[v => !!v || '请输入版本']"
                     variant="underlined"
                     v-model="extension.version"
@@ -82,6 +86,7 @@ export default {
             this.dialog = true
             this.isCreate = isCreate
             this.extension = {}
+            this.extensionFile = []
             if (!isCreate) {
               this.extension = item
             }
