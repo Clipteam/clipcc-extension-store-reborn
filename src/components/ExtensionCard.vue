@@ -12,6 +12,7 @@
                 <v-btn variant="outlined" v-if="cardStatus === 'LOADING'" disabled>{{t('loading')}}</v-btn>
                 <v-btn variant="outlined" v-else-if="cardStatus === 'INSTALLED'" disabled>{{t('installed')}}</v-btn>
                 <v-btn variant="outlined" v-else-if="cardStatus === 'INSTALLING'" disabled>{{t('installing')}}</v-btn>
+                <v-btn variant="outlined" v-else-if="cardStatus === 'DOWNLOAD'" @click="handleDownload()">{{t('download')}}</v-btn>
                 <v-btn variant="outlined" @click="handleInstall()" v-else>{{t('install')}}</v-btn>
             </div>
         </div>
@@ -34,11 +35,16 @@ export default {
         cardStatus: 'LOADING'
     }),
     mounted() {
+        if (!window.opener) {
+            this.cardStatus = 'DOWNLOAD';
+            return;
+        };
         this.extensionChannel = new BroadcastChannel('extension');
         this.extensionChannel.addEventListener('message', this.fetchInstalledExtension)
         this.extensionChannel.postMessage({action: 'get'})
     },
     unmounted(){
+        if (!window.opener) return
         this.extensionChannel.removeEventListener('message', this.fetchInstalledExtension)
     },
     setup() {
@@ -68,6 +74,12 @@ export default {
                 extension: this.extension.extensionId,
                 download: `${location.origin}${location.pathname}extension/${this.extension.filename}`
             });
+        },
+        handleDownload() {
+            const url = document.createElement('a')
+            url.download = this.extension.filename
+            url.href = `${location.origin}${location.pathname}extension/${this.extension.filename}`
+            url.click();
         }
     }
 }
