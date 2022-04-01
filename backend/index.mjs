@@ -10,7 +10,7 @@ import multer from 'multer';
 import cookieParser from 'cookie-parser';
 
 const app = express();
-const port = 3001
+const port = 3000
 const upload = multer()
 const cookies = cookieParser(process.env.secret||'32uiefwu3knssewffwe')
 
