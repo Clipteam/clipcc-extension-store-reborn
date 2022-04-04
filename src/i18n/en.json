@@ -8,8 +8,11 @@
     "OK": "OK",
     "author": "Author",
     "version": "Version",
-    "extension-install-fail": "Extension {extension} install failed!",
+    "extension-install-fail-title": "Install failed",
+    "extension-install-fail": "Extension \"{extension}\" install failed!",
     "error-detail": "Error Detail",
     "loadfail": "load failed",
+    "nodescription": "No description.",
+    "search": "Search",
     "notopener": "Please open this page from within the editor to install extensions"
 }

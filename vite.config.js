@@ -11,9 +11,9 @@ export default defineConfig({
   plugins: [
     vue(),
     // https://github.com/vuetifyjs/vuetify-loader/tree/next/packages/vite-plugin
-    vuetify({
-      autoImport: true,
-    }),
+    // vuetify({
+    //   autoImport: true,
+    // }),
     vueI18n({
       include: path.resolve(__dirname, './src/i18n/**')
     })

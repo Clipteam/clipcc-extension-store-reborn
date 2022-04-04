@@ -22,29 +22,39 @@ export async function saveExtension(req, res) {
     if (!db) return res.status(500).json({error:'database not initialize!'})
     if (!userIsLogin(req)) return res.status(403).json({error:'not login'})
     const body = req.body
-    const file = req.file
+    const file = req.files['extensionFile']
+    const icon = req.files['iconFile']
     if (body?.id) {
-        await db.run('UPDATE extension SET extensionId = ?,name = ?,author = ?,version = ? WHERE id = ?', 
+        await db.run('UPDATE extension SET extensionId = ?,name = ?,description = ?,author = ?,version = ? WHERE id = ?', 
             body.extensionId,
             body.name,
+            body.description,
             body.author,
             body.version,
             body.id
         );
     } else {
         if (!file) return res.status(422).json({error: '请上传扩展文件'})
-        const result = await db.run('INSERT INTO extension (extensionId,name,author,version) VALUES (?,?,?,?)',
+        const result = await db.run('INSERT INTO extension (extensionId,name,description,author,version) VALUES (?,?,?,?,?)',
             body.extensionId,
             body.name,
+            body.description,
             body.author,
             body.version
         )
         body.id = result.lastID
     }
     if (file) {
-        await fs.writeFile(`extension/${file.originalname}`, file.buffer)
+        await fs.writeFile(`extension/${file[0].originalname}`, file[0].buffer)
         await db.run('UPDATE extension SET filename = ? WHERE id = ?',
-            file.originalname,
+            file[0].originalname,
+            body.id
+        )
+    }
+    if (icon) {
+        await fs.writeFile(`extension/image/${body.extensionId}.png`, icon[0].buffer)
+        await db.run('UPDATE extension SET image = ? WHERE id = ?',
+            `${body.extensionId}.png`,
             body.id
         )
     }

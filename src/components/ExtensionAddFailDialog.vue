@@ -1,15 +1,15 @@
 <template>
-    <v-dialog
+    <Dialog
+      ref="dialog"
       v-model="dialog"
-      width="600"
+      width="390"
     >
-    <div class="text-center">
-      <v-card width="500">
-        <v-card-title class="text-h5">
-          {{ t('extension-install-fail', {extension: extensionId}) }}
-        </v-card-title>
-        <v-card-text>{{ t('error-detail') }} : {{ errorDetail }}</v-card-text>
-        <v-card-actions>
+    <template #title>
+      {{ t('extension-install-fail-title') }}
+    </template>
+    <h2>{{ t('extension-install-fail', {extension: extensionId}) }}</h2>
+        <p>{{ t('error-detail') }} : {{ errorDetail }}</p>
+        <!-- <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn
             color="green darken-1"
@@ -18,17 +18,19 @@
           >
             {{ t('OK') }}
           </v-btn>
-        </v-card-actions>
-      </v-card>
-      </div>
-    </v-dialog>
+        </v-card-actions> -->
+    </Dialog>
 </template>
 <script>
 import { useI18n } from "vue-i18n"
+import Dialog from "./Dialog.vue"
 
 export default {
     name: 'extension-add-fail-dialog',
     expose: ['openDialog'],
+    components: {
+      Dialog
+    },
     data () {
       return {
         dialog: false,
@@ -41,10 +43,16 @@ export default {
     },
     methods: {
         openDialog (extensionId, detail) {
-            this.dialog = true;
+            this.$refs.dialog.openDialog();
             this.extensionId = extensionId;
             this.errorDetail = detail;
         }
     }
 }
 </script>
+
+<style scoped>
+h2, p {
+  text-align: center;
+}
+</style>

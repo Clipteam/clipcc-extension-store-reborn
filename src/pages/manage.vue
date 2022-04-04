@@ -1,10 +1,12 @@
 <template>
+  <menu-bar-manage />
+  <div class="container">
+
     <div class="header">
         <h2>扩展管理</h2>
-        <v-btn variant="outlined" @click="handleCreate()">添加扩展</v-btn>
+        <button class="create" @click="handleCreate()">添加扩展</button>
     </div>
-  <v-table>
-    <template v-slot:default>
+  <table>
       <thead>
         <tr>
           <th class="text-left">
@@ -34,13 +36,13 @@
           <td>{{ item.version }}</td>
           <td>{{ item.author }}</td>
           <td>
-              <v-btn icon="mdi-pencil" size="small" variant="text" @click="handleEdit(item)"></v-btn>
-              <v-btn icon="mdi-delete" size="small" variant="text" @click="handleDelete(item)"></v-btn>
+              <button class='action' @click="handleEdit(item)"><img src='../assets/edit.svg' title="编辑"/></button>
+              <button class='action' @click="handleDelete(item)"><img src='../assets/delete.svg' title="删除"/></button>
           </td>
         </tr>
       </tbody>
-    </template>
-  </v-table>
+  </table>
+  </div>
   <extension-edit-dialog ref='dialog' @onSave="getExtension()" />
 </template>
 
@@ -48,15 +50,17 @@
 <script>
 import ExtensionEditDialog from "../components/ExtensionEditDialog.vue"
 import cookie from "js-cookie";
+import MenuBarManage from "../components/MenuBarManage.vue";
 
 export default {
     name: 'manage',
     components: {
-        ExtensionEditDialog
+      ExtensionEditDialog,
+      MenuBarManage
     },
     methods: {
         async getExtension() {
-          const response = await fetch('api/getExtension')
+          const response = await fetch('/api/getExtension')
           const data = await response.json()
           this.extension = data
         },
@@ -95,8 +99,40 @@ export default {
 </script>
 
 <style scoped>
+.action {
+  border: none;
+  margin-right: 8px;
+  cursor: pointer;
+  background-color: transparent;
+  border-radius: 50%;
+}
 .header {
     display: flex;
+    padding-bottom: 10px;
     justify-content: space-between;
+}
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+
+.create {
+  cursor: pointer;
+  border: none;
+  padding: .6rem 1rem;
+  border-radius: 12px;
+  color: white;
+  background: #0070F3;
 }
 </style>

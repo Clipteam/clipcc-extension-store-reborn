@@ -1,22 +1,29 @@
 <template>
-    <v-card class="card">
-        <div class="content">
-            <div class="left">
-                <v-card-title>{{ extension.name }}</v-card-title>
-                <div class="text">
-                    <span>{{t('author')}} : {{ extension.author }}</span>
-                    <span>{{t('version')}} : {{ extension.version }}</span>
-                </div>
-            </div>
-            <div class="right">
-                <v-btn variant="outlined" v-if="cardStatus === 'LOADING'" disabled>{{t('loading')}}</v-btn>
-                <v-btn variant="outlined" v-else-if="cardStatus === 'INSTALLED'" disabled>{{t('installed')}}</v-btn>
-                <v-btn variant="outlined" v-else-if="cardStatus === 'INSTALLING'" disabled>{{t('installing')}}</v-btn>
-                <v-btn variant="outlined" v-else-if="cardStatus === 'DOWNLOAD'" @click="handleDownload()">{{t('download')}}</v-btn>
-                <v-btn variant="outlined" @click="handleInstall()" v-else>{{t('install')}}</v-btn>
-            </div>
+    <div class="card">
+        <div class="image">
+            <img 
+                v-if="!!extension.image"
+                :src="'extension/image/' + extension.image"
+            />
+            <img v-else src="../assets/default-extension-image.jpg" />
         </div>
-    </v-card>
+        <div class="extension-info">
+            <span>{{ extension.name }}
+            <div class="action">
+                <button v-if="cardStatus === 'LOADING'" disabled>{{t('loading')}}</button>
+                <button v-else-if="cardStatus === 'INSTALLED'" disabled>{{t('installed')}}</button>
+                <button v-else-if="cardStatus === 'INSTALLING'" disabled>{{t('installing')}}</button>
+                <button v-else-if="cardStatus === 'DOWNLOAD'" @click="handleDownload()">{{t('download')}}</button>
+                <button @click="handleInstall()" v-else>{{t('install')}}</button>
+            </div>
+            </span>
+            <span>{{ extension.description ? extension.description : t('nodescription') }}</span>
+        </div>
+        <div class="extension-metadata">
+            <div class="item"><div>版本</div><div class="detail">{{ extension.version }}</div></div>
+            <div class="item"><div>作者</div><div class="detail">{{ extension.author }}</div></div>
+        </div>
+    </div>
     <extension-add-fail-dialog ref='dialog' />
 </template>
 <script>
@@ -86,8 +93,82 @@ export default {
 </script>
 <style scoped lang="scss">
 .card {
-    padding: 0.45em 0;
-    margin-bottom: 1em;
+    transition: 0.25s ease-out;
+    min-width: 0;
+    background: white;
+    display: flex;
+    overflow: hidden;
+    flex-direction: column;
+    justify-content: space-between;
+    border-radius: 0.5rem;
+    padding: 0;
+    border-style: solid;
+    border-color: hsla(0, 0%, 0%, 0.15);
+}
+.card:hover {
+    border-color: rgb(53, 129, 234);
+}
+.image {
+    position: relative;
+    overflow: hidden;
+    img {
+        width: 100%;
+        display: block;
+    }
+}
+.action {
+    button {
+        word-break: keep-all;
+        cursor: pointer;
+        border-radius: 7px;
+        border-width: 1px;
+        border-color: hsla(0, 0%, 0%, 0.15);
+        padding: .13rem .20rem;
+    }
+}
+.extension-info {
+    span:nth-child(1) {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-weight: bold;
+        flex-direction: row;
+    }
+    span:nth-child(2) {
+        overflow: hidden;
+        position: relative;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical; 
+        font-weight: normal;
+        line-height: 1.375rem;
+        padding-top: 0.3125rem;
+        padding-bottom: 0.25rem;
+    }
+    text-align: left;
+    padding: 10px;
+    padding-left: 1.25rem;
+}
+.extension-metadata {
+    .item {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+    .detail {
+        height: 100%;
+        padding-top: 0.1rem;
+        font-weight: bold;
+    }
+    text-align: left;
+    width: 100%;
+    padding: 0 1.25rem 1rem 1.25rem;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    font-size: 12px;
+    color: hsla(225, 15%, 40%, 1);
+    opacity: 0.75;
 }
 .content {
     align-items: center;

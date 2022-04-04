@@ -1,151 +1,191 @@
 <template>
-    <v-dialog
-      v-model="dialog"
-      height="500"
-      persistent
+    <Dialog
+      ref="dialog"
     >
-      <v-card width="500">
-        <v-card-title>
-          <span class="text-h5">{{isCreate ? '添加': '编辑'}}扩展</span>
-        </v-card-title>
+    <template #title>
+        {{isCreate ? '添加': '编辑'}}扩展
+    </template>
         <p class="grey">Tips: 正常情况下会从扩展文件内自动获取，无需手动输入</p>
-        <v-form @submit="saveExtension()">
-          <v-card-text>
-                <v-text-field
+        <form @submit.prevent="saveExtension()">
+                <label for="extensionid">扩展ID</label>
+                <input
+                    placeholder="扩展ID"
+                    name="extensionid"
                     label="扩展ID"
                     autocomplete="off"
-                    variant="underlined"
-                    :rules="[v => !!v || '请输入扩展ID']"
                     v-model="extension.extensionId"
                     required
-                ></v-text-field>
-                <v-text-field
-                    label="扩展名"
-                    :rules="[v => !!v || '请输入扩展名']"
-                    variant="underlined"
+                />
+                <label for="extensionname">扩展名</label>
+                <input
+                    name="extensionname"
+                    placeholder="扩展名..."
                     autocomplete="off"
                     v-model="extension.name"
                     required
-                ></v-text-field>
-                <v-text-field
-                    label="作者"
+                />
+                 <label for="extensiondescription">扩展说明</label>
+                <input
+                    name="extensiondescription"
+                    placeholder="扩展说明..."
                     autocomplete="off"
-                    :rules="[v => !!v || '请输入作者']"
+                    v-model="extension.description"
+                    required
+                />
+                <label for="extensionname">作者</label>
+                <input
+                    label="作者"
+                    placeholder="作者..."
+                    autocomplete="off"
                     variant="underlined"
                     v-model="extension.author"
                     required
-                ></v-text-field>
-                <v-text-field
-                    label="版本"
+                >
+                <label for="version">版本</label>
+                <input
+                    name="version"
+                    placeholder="版本..."
                     autocomplete="off"
-                    :rules="[v => !!v || '请输入版本']"
                     variant="underlined"
                     v-model="extension.version"
                     required
-                ></v-text-field>
-                <v-file-input
+                >
+                <label for="file">文件</label>
+                <input
                     variant="underlined"
                     accept=".ccx"
-                    v-model="extensionFile"
-                    @change="readExtension()"
+                    type="file"
+                    @change="e => readExtension(e)"
                     label="扩展文件"
-                ></v-file-input>
-          </v-card-text>
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn
+                />
+          <div>
+            <button
               color="blue-darken-1"
-              text
-              @click="dialog = false"
+              type="button"
+              @click.prevent="$refs.dialog.closeDialog()"
             >
               关闭
-            </v-btn>
-            <v-btn
+            </button>
+            <button
               color="blue-darken-1"
               text
               type="submit"
               :disabled="dialogStatus == 'SUBMITING'"
             >
               保存
-            </v-btn>
-          </v-card-actions>
-        </v-form>
-      </v-card>
-    </v-dialog>
+            </button>
+          </div>
+        </form>
+    </Dialog>
 </template>
 
 <script>
 import JSZip from 'jszip';
+import Dialog from './Dialog.vue';
 
 export default {
-    expose: ['openDialog'],
-    emits: ['onSave'],
-    name: 'extension-edit-dialog',
+    expose: ["openDialog"],
+    emits: ["onSave"],
+    name: "extension-edit-dialog",
     methods: {
         openDialog(item, isCreate) {
-            this.dialog = true
-            this.isCreate = isCreate
-            this.extension = {}
-            this.extensionFile = []
+            this.$refs.dialog.openDialog();
+            this.isCreate = isCreate;
+            this.extension = {};
+            this.extensionFile = [];
+            this.icon = null;
             if (!isCreate) {
-              this.extension = item
+                this.extension = item;
             }
         },
-        async readExtension() {
-          if (!this.extensionFile) return;
-          try {
-            const extensionFile = await this.extensionFile[0].arrayBuffer()
-            const zip = await JSZip.loadAsync(extensionFile)
-            const info = await zip.file('info.json').async('string')
-            const infoJson = JSON.parse(info);
-            this.extension.extensionId = infoJson.id;
-            this.extension.author = infoJson.author;
-            this.extension.version = infoJson.version;
-          } catch (err) {
-            console.error(err)
-          }
+        async readExtension(event) {
+            this.extensionFile = event.target.files;
+            console.log(this.extensionFile);
+            if (this.extensionFile.length < 1)
+                return;
+            try {
+                const extensionFile = await this.extensionFile[0].arrayBuffer();
+                const zip = await JSZip.loadAsync(extensionFile);
+                const info = await zip.file("info.json").async("string");
+                const infoJson = JSON.parse(info);
+                this.extension.extensionId = infoJson.id;
+                this.extension.author = infoJson.author;
+                this.extension.version = infoJson.version;
+                const iconsPath = infoJson.icon;
+                const icon = await zip.file(iconsPath).async("blob");
+                this.icon = icon;
+            }
+            catch (err) {
+                console.error(err);
+            }
         },
         async saveExtension() {
-            this.dialogStatus = 'SUBMITING'
-            let extension = this.extension
+            this.dialogStatus = "SUBMITING";
+            let extension = this.extension;
             if (this.extensionFile[0]) {
-                const file = this.extensionFile[0]
-                extension = Object.assign(this.extension,{
+                const file = this.extensionFile[0];
+                extension = Object.assign(this.extension, {
                     extensionFile: file
-                })
+                });
             }
-            const formData = new FormData()
+            if (this.icon) {
+                extension = Object.assign(this.extension, {
+                    iconFile: this.icon
+                });
+            }
+            const formData = new FormData();
             for (const key in extension) {
                 formData.append(key, extension[key]);
             }
             try {
-              const response = await fetch('api/SaveExtension', {
-                method: 'post',
-                body: formData
-              })
-              await response.json();
-              this.dialog = false;
-              this.dialogStatus = 'WAITING';
-              this.$emit('onSave')
-            } catch(err) {
-              alert(err);
-              this.dialogStatus = 'WAITING';
+                const response = await fetch("api/SaveExtension", {
+                    method: "post",
+                    body: formData
+                });
+                await response.json();
+                this.$refs.dialog.closeDialog();
+                this.dialogStatus = "WAITING";
+                this.$emit("onSave");
             }
-            
+            catch (err) {
+                alert(err);
+                this.dialogStatus = "WAITING";
+            }
         }
     },
     data: () => ({
-      dialog: false,
-      isCreate: false,
-      dialogStatus: 'WAITING',
-      extension: {},
-      extensionFile: []
+        dialog: false,
+        isCreate: false,
+        dialogStatus: "WAITING",
+        icon: null,
+        extension: {},
+        extensionFile: []
     }),
+    components: { Dialog }
 }
 </script>
-<style>
+<style scoped>
 .grey {
-  margin: 0.1em 1em;
   color: #999;
+}
+input {
+  width: 100%;
+  border-radius: 0.63rem;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+button {
+  transition: all .15s;
+  border-radius: 10px;
+  background-color: #04AA6D;
+  color: white;
+  padding: 10px 15px;
+  margin: 8px 0;
+  border: none;
+  margin-right: 5px;
+  cursor: pointer;
 }
 </style>

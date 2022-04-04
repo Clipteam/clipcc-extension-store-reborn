@@ -1,31 +1,22 @@
 <template>
   <div class="header">
         <div class="title">
-          <img src="../../public/favicon.ico" class="logo" />
-          {{t('title')}}
+          <img src="/favicon.ico" class="logo" />
+           ClipCC扩展商店管理面板
         </div>
-          <!-- <span class="button" @click="$refs.dialog.openDialog()">添加扩展</span> -->
-        <search />
   </div>
-  <request-extension-dialog ref='dialog'/>
 </template>
 
 
 <script>
 import { useI18n } from "vue-i18n"
-import Search from "./Search.vue"
-import RequestExtensionDialog from "./RequestExtensionDialog.vue";
 
 export default {
-    name: "menu-bar",
+    name: "menu-bar-manage",
     setup() {
         const { locale, t } = useI18n();
         return { locale, t };
     },
-    components: {
-      Search,
-      RequestExtensionDialog
-    }
 }
 </script>
 
@@ -44,14 +35,13 @@ export default {
   height: 3.525rem;
   padding: 1rem;
   width: 100%;
-  user-select: none;
-  background: linear-gradient(35deg, rgb(53, 129, 234), #479cff);;
+  background: linear-gradient(5deg, rgb(53, 129, 234), #479cff);
 }
 .title {
   .logo {
     position: relative;
-    width: 30px;
-    height: 30px;
+    width: 25px;
+    height: 25px;
     margin-right: .5rem;
   }
     align-items: center;
@@ -64,14 +54,5 @@ export default {
 }
 .left {
   display: flex;
-}
-.button {
-    cursor: pointer;
-    padding: 0.425rem 1rem;
-    margin-right: 1rem;
-    background: rgb(53, 129, 234);
-    border-radius: 1.375rem;
-    color: hsla(0, 100%, 100%, 1);
-    height: 2.22rem;
 }
 </style>

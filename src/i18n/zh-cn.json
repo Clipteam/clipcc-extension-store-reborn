@@ -8,8 +8,11 @@
     "author": "作者",
     "version": "版本",
     "OK": "好的",
-    "extension-install-fail": "扩展{extension}安装失败！",
+    "extension-install-fail-title": "安装失败",
+    "extension-install-fail": "扩展“{extension}”安装失败",
     "error-detail": "错误详情",
     "loadfail": "加载失败",
+    "nodescription": "该扩展还没有描述",
+    "search": "搜索",
     "notopener": "请从编辑器内打开此网页以安装扩展"
 }
