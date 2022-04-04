@@ -20,8 +20,8 @@
             <span>{{ extension.description ? extension.description : t('nodescription') }}</span>
         </div>
         <div class="extension-metadata">
-            <div class="item"><div>版本</div><div class="detail">{{ extension.version }}</div></div>
-            <div class="item"><div>作者</div><div class="detail">{{ extension.author }}</div></div>
+            <div class="item"><div>{{ t('version') }}</div><div class="detail">{{ extension.version }}</div></div>
+            <div class="item"><div>{{ t('author') }}</div><div class="detail">{{ extension.author }}</div></div>
         </div>
     </div>
     <extension-add-fail-dialog ref='dialog' />
