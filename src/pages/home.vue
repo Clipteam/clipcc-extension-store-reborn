@@ -14,6 +14,7 @@
 import ExtensionCard from "../components/ExtensionCard.vue"
 import MenuBar from "../components/MenuBar.vue"
 import Dialog from '../components/Dialog.vue'
+import qs from 'query-string';
 import { useI18n } from "vue-i18n"
 
 export default {
@@ -29,7 +30,10 @@ export default {
     },
     mounted() {
         document.title = this.t('title')
-        fetch('api/getExtension')
+        const search = qs.parse(location.search)
+        const isCommunity = search.community == '1';
+        const isDesktop = search.desktop == '1';
+        fetch(`api/getExtension${isCommunity ? '?community=true' : isDesktop ? '?desktop=true' : ''}`)
             .then(response => response.json())
             .then(data => {
                 this.extension = data;

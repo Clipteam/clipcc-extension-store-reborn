@@ -39,7 +39,8 @@ export default {
         ExtensionAddFailDialog
     },
     data: () => ({
-        cardStatus: 'LOADING'
+        cardStatus: 'LOADING',
+        isCommunity: false
     }),
     mounted() {
         if (!window.opener) {
@@ -62,6 +63,7 @@ export default {
         fetchInstalledExtension (event) {
             console.log('[BroadcastChannel] event(%s) %o', event.data.action, event.data);
             if (event.data.action === 'tell') {
+                if (event.data.isCommunity) this.isCommunity = true;
                 if (event.data.data.includes(this.extension.extensionId)) {
                     this.cardStatus = 'INSTALLED'
                 } else {
@@ -79,7 +81,7 @@ export default {
             this.extensionChannel.postMessage({
                 action: 'add',
                 extension: this.extension.extensionId,
-                download: `${location.origin}${location.pathname}extension/${this.extension.filename}`
+                download: this.isCommunity ? `${location.origin}${location.pathname}api/getExtensionById?id=${this.extension.extensionId}&version=${this.extension.version}` : `${location.origin}${location.pathname}extension/${this.extension.filename}`
             });
         },
         handleDownload() {
