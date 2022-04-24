@@ -1,8 +1,7 @@
 <template>
     <Dialog
       ref="dialog"
-      v-model="dialog"
-      width="390"
+      :width=390
     >
     <template #title>
       {{ t('extension-install-fail-title') }}
@@ -33,7 +32,6 @@ export default {
     },
     data () {
       return {
-        dialog: false,
         errorDetail: ''
       }
     },

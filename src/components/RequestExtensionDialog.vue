@@ -1,7 +1,7 @@
 <template>
     <Dialog
       ref="dialog"
-      width="480"
+      :width=480
     >
         <template #title>
             如何向扩展商店添加扩展？

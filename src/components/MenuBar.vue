@@ -5,7 +5,7 @@
           {{t('title')}}
         </div>
           <!-- <span class="button" @click="$refs.dialog.openDialog()">添加扩展</span> -->
-        <search />
+        <search v-model='search'/>
   </div>
   <request-extension-dialog ref='dialog'/>
 </template>
@@ -18,6 +18,9 @@ import RequestExtensionDialog from "./RequestExtensionDialog.vue";
 
 export default {
     name: "menu-bar",
+    data: () => ({
+      search: ''
+    }),
     setup() {
         const { locale, t } = useI18n();
         return { locale, t };

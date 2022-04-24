@@ -9,6 +9,7 @@
         <form @submit.prevent="saveExtension()">
                 <label for="extensionid">扩展ID</label>
                 <input
+                    type="text"
                     placeholder="扩展ID"
                     name="extensionid"
                     label="扩展ID"
@@ -18,6 +19,7 @@
                 />
                 <label for="extensionname">扩展名</label>
                 <input
+                    type="text"
                     name="extensionname"
                     placeholder="扩展名..."
                     autocomplete="off"
@@ -26,6 +28,7 @@
                 />
                  <label for="extensiondescription">扩展说明</label>
                 <input
+                    type="text"
                     name="extensiondescription"
                     placeholder="扩展说明..."
                     autocomplete="off"
@@ -34,6 +37,7 @@
                 />
                 <label for="extensionname">作者</label>
                 <input
+                    type="text"
                     label="作者"
                     placeholder="作者..."
                     autocomplete="off"
@@ -43,6 +47,7 @@
                 >
                 <label for="version">版本</label>
                 <input
+                    type="text"
                     name="version"
                     placeholder="版本..."
                     autocomplete="off"
@@ -50,6 +55,40 @@
                     v-model="extension.version"
                     required
                 >
+                <label for="settings">扩展设置</label>
+                <div name="settings" class="settings">
+                    <div>
+                        <input
+                            id="community"
+                            type="checkbox"
+                            value="community"
+                            autocomplete="off"
+                            v-model="extension.community"
+                        >
+                        <label for="community">社区版可用</label>
+                    </div>
+                    <div>
+                        <input
+                            id="desktop"
+                            type="checkbox"
+                            value="desktop"
+                            autocomplete="off"
+                            v-model="extension.desktop"
+                        >
+                        <label for="desktop">仅桌面版</label>
+                    </div>
+                    <div>
+                        <input
+                            id="hidden"
+                            type="checkbox"
+                            value="hidden"
+                            autocomplete="off"
+                            variant="underlined"
+                            v-model="extension.hidden"
+                        >
+                        <label for="hidden">隐藏</label>
+                    </div>
+                </div>
                 <label for="file">文件</label>
                 <input
                     variant="underlined"
@@ -164,11 +203,11 @@ export default {
     components: { Dialog }
 }
 </script>
-<style scoped>
+<style scoped lang="scss">
 .grey {
   color: #999;
 }
-input {
+input[type=text], input[type=file] {
   width: 100%;
   border-radius: 0.63rem;
   padding: 12px 20px;
@@ -187,5 +226,15 @@ button {
   border: none;
   margin-right: 5px;
   cursor: pointer;
+}
+
+.settings {
+    display: flex;
+    margin: 0.8rem;
+    label {
+        font-size: 0.3rem;
+        color: #999;
+        padding: 0 .30rem;
+    }
 }
 </style>

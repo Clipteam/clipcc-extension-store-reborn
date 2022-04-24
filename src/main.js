@@ -1,7 +1,5 @@
 import { createApp } from 'vue'
 import App from './App.vue'
-// import vuetify from './plugins/vuetify'
-import { loadFonts } from './plugins/webfontloader'
 import {createRouter, createWebHashHistory} from 'vue-router';
 import { createI18n } from 'vue-i18n';
 import routes from './routers'
@@ -17,10 +15,8 @@ const i18n = createI18n({
   messages
 })
 
-// loadFonts()
 
 const app = createApp(App);
 app.use(router);
 app.use(i18n);
-// app.use(vuetify);
 app.mount('#app');

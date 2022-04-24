@@ -1,8 +1,10 @@
 import sqlite3 from 'sqlite3';
 import { open } from 'sqlite';
 import fs from 'fs-extra';
+import path from 'path';
 import bcrypt from 'bcrypt';
 
+/** @type {import('sqlite').Database} */
 let db;
 (async () => {
     db = await open({
@@ -14,8 +16,28 @@ let db;
 
 export async function getExtension(req, res) {
     if (!db) return res.status(500).json({error:'database not initialize!'})
-    const dbdata = await db.all("SELECT * FROM extension");
+    const dbdata = await db.all(`SELECT * FROM extension WHERE hidden = 'false'${req.query.community?'AND community = \'true\'' : req.query.desktop ? '' : 'AND desktop = \'false\''}`);
+    dbdata.forEach(d => {
+        d['community'] = JSON.parse(d.community)
+        d['desktop'] = JSON.parse(d.desktop)
+        d['hidden'] = JSON.parse(d.hidden)
+    });
     return res.json(dbdata);
+}
+
+export async function getExtensionById(req, res) {
+    if (!req.query.id || !req.query.version) return res.status(400).send('');
+    const data = await db.get('SELECT * FROM extension WHERE extensionId = ?', req.query.id)
+    if (!data) return res.status(404).json({'error': 'extension not found'})
+    if (data.community == 'false') return res.status(403).json({'error': 'extension unavailable by community version'})
+    const ext = path.resolve('extension', `${req.query.id}@${req.query.version}.ccx`);
+    
+    try {
+        await fs.stat(ext)
+    } catch {
+        return res.status(404).json({error: 'version not found!!!1'})
+    }
+    return res.sendFile(ext);
 }
 
 export async function saveExtension(req, res) {
@@ -25,29 +47,36 @@ export async function saveExtension(req, res) {
     const file = req.files['extensionFile']
     const icon = req.files['iconFile']
     if (body?.id) {
-        await db.run('UPDATE extension SET extensionId = ?,name = ?,description = ?,author = ?,version = ? WHERE id = ?', 
+        await db.run('UPDATE extension SET extensionId = ?,name = ?,description = ?,author = ?,version = ?,community = ?,desktop = ?,hidden = ? WHERE id = ?', 
             body.extensionId,
             body.name,
             body.description,
             body.author,
             body.version,
+            body.community,
+            body.desktop,
+            body.hidden,
             body.id
         );
     } else {
         if (!file) return res.status(422).json({error: '请上传扩展文件'})
-        const result = await db.run('INSERT INTO extension (extensionId,name,description,author,version) VALUES (?,?,?,?,?)',
+        const result = await db.run('INSERT INTO extension (extensionId,name,description,author,version,community,desktop,hidden) VALUES (?,?,?,?,?,?,?)',
             body.extensionId,
             body.name,
             body.description,
             body.author,
-            body.version
+            body.version,
+            body.community,
+            body.desktop,
+            body.hidden
         )
         body.id = result.lastID
     }
     if (file) {
-        await fs.writeFile(`extension/${file[0].originalname}`, file[0].buffer)
+        const name = `${body.extensionId}@${body.version}.ccx`;
+        await fs.writeFile(`extension/${name}`, file[0].buffer)
         await db.run('UPDATE extension SET filename = ? WHERE id = ?',
-            file[0].originalname,
+            name,
             body.id
         )
     }
