@@ -16,7 +16,12 @@ let db;
 
 export async function getExtension(req, res) {
     if (!db) return res.status(500).json({error:'database not initialize!'})
-    const dbdata = await db.all(`SELECT * FROM extension WHERE hidden = 'false'${req.query.community?'AND community = \'true\'' : req.query.desktop ? '' : 'AND desktop = \'false\''}`);
+    let dbdata;
+    if (req.query.showHidden) {
+        dbdata = await db.all('SELECT * FROM extension')
+    } else {
+        dbdata = await db.all(`SELECT * FROM extension WHERE hidden = 'false'${req.query.community?'AND community = \'true\'' : req.query.desktop ? '' : 'AND desktop = \'false\''}`);
+    }
     dbdata.forEach(d => {
         d['community'] = JSON.parse(d.community)
         d['desktop'] = JSON.parse(d.desktop)

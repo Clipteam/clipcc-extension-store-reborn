@@ -60,7 +60,7 @@ export default {
     },
     methods: {
         async getExtension() {
-          const response = await fetch('api/getExtension')
+          const response = await fetch('api/getExtension?showHidden=1')
           const data = await response.json()
           this.extension = data
         },
