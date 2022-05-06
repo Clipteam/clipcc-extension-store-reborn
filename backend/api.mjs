@@ -65,15 +65,15 @@ export async function saveExtension(req, res) {
         );
     } else {
         if (!file) return res.status(422).json({error: '请上传扩展文件'})
-        const result = await db.run('INSERT INTO extension (extensionId,name,description,author,version,community,desktop,hidden) VALUES (?,?,?,?,?,?,?)',
+        const result = await db.run('INSERT INTO extension (extensionId,name,description,author,version,community,desktop,hidden) VALUES (?,?,?,?,?,?,?,?)',
             body.extensionId,
             body.name,
             body.description,
             body.author,
             body.version,
-            body.community,
-            body.desktop,
-            body.hidden
+            body.community||false,
+            body.desktop||false,
+            body.hidden||false
         )
         body.id = result.lastID
     }

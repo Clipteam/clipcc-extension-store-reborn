@@ -63,7 +63,9 @@ export default {
         fetchInstalledExtension (event) {
             console.log('[BroadcastChannel] event(%s) %o', event.data.action, event.data);
             if (event.data.action === 'tell') {
-                if (event.data.isCommunity) this.isCommunity = true;
+                if (event.data.isCommunity) {
+                    this.isCommunity = true;
+                } 
                 if (event.data.data.includes(this.extension.extensionId)) {
                     this.cardStatus = 'INSTALLED'
                 } else {
