@@ -1,11 +1,13 @@
 <template>
     <div class="card">
         <div class="image">
-            <img 
+            <v-lazy-image
                 v-if="!!extension.image"
                 :src="'extension/image/' + extension.image"
+                :src-placeholder="extUnknownImage"
+                :alt="extension.name"
             />
-            <img v-else src="../assets/default-extension-image.jpg" />
+            <img v-else :src="extUnknownImage" />
         </div>
         <div class="extension-info">
             <span>{{ extension.name }}
@@ -28,7 +30,9 @@
 </template>
 <script>
 import { useI18n } from "vue-i18n"
+import extUnknownImage from '../assets/ext_unknown.png'
 import ExtensionAddFailDialog from "./ExtensionAddFailDialog.vue"
+import VLazyImage from "v-lazy-image";
 
 export default {
     name: 'extension-card',
@@ -36,7 +40,8 @@ export default {
         extension: Object
     },
     components: {
-        ExtensionAddFailDialog
+        ExtensionAddFailDialog,
+        VLazyImage
     },
     data: () => ({
         cardStatus: 'LOADING',
@@ -57,7 +62,7 @@ export default {
     },
     setup() {
         const { locale, t } = useI18n()
-        return { locale, t }
+        return { locale, t, extUnknownImage }
     },
     methods: {
         fetchInstalledExtension (event) {
