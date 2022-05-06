@@ -33,7 +33,8 @@ export default {
         const search = qs.parse(location.search)
         const isCommunity = search.community == '1';
         const isDesktop = search.desktop == '1';
-        fetch(`api/getExtension${isCommunity ? '?community=true' : isDesktop ? '?desktop=true' : ''}`)
+        const isDownload = !window.opener
+        fetch(`api/getExtension${isCommunity ? '?community=true' : isDesktop ? '?desktop=true' : isDownload ? '?showHidden=true' : ''}`)
             .then(response => response.json())
             .then(data => {
                 this.extension = data;

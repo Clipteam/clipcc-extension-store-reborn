@@ -71,9 +71,9 @@ export async function saveExtension(req, res) {
             body.description,
             body.author,
             body.version,
-            body.community||false,
-            body.desktop||false,
-            body.hidden||false
+            body.community,
+            body.desktop,
+            body.hidden
         )
         body.id = result.lastID
     }
