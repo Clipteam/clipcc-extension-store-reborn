@@ -8,6 +8,7 @@ import {
 } from './api.mjs';
 import bodyParser from 'body-parser';
 import multer from 'multer';
+import cors from 'cors';
 import cookieParser from 'cookie-parser';
 
 import 'express-async-errors';
@@ -18,6 +19,7 @@ const upload = multer()
 const cookies = cookieParser(process.env.secret||'32uiefwu3knssewffwe')
 app.set('trust proxy', 'loopback');
 app.disable('x-powered-by');
+app.use(cors())
 app.use(express.static('./dist'));
 app.use('/extension', express.static('./extension'));
 
