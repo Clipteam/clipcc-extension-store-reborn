@@ -16,6 +16,7 @@
                 <button v-else-if="cardStatus === 'INSTALLED'" disabled>{{t('installed')}}</button>
                 <button v-else-if="cardStatus === 'INSTALLING'" disabled>{{t('installing')}}</button>
                 <button v-else-if="cardStatus === 'DOWNLOAD'" @click="handleDownload()">{{t('download')}}</button>
+                <button v-else-if="cardStatus === 'UPGRADE'" @click="handleUpgrade()">{{t('upgrade')}}</button>
                 <button @click="handleInstall()" v-else>{{t('install')}}</button>
             </div>
             </span>
@@ -71,9 +72,29 @@ export default {
                 if (event.data.isCommunity) {
                     this.isCommunity = true;
                 } 
-                if (event.data.data.includes(this.extension.extensionId)) {
+                installedExtensions = [];
+                for (let i = 0; i < event.data.installedExtensions.length; i++) {
+                    installedExtensions.push(event.data.installedExtensions[i].split("@")[0]);
+                }
+                installedExtensionsVersion = [];
+                for (let i = 0; i < event.data.installedExtensions.length; i++) {
+                    let version = event.data.installedExtensions[i].split("@")[1];
+                    if (version != "") {
+                        installedExtensionsVersion.push(version);
+                    } else {
+                        installedExtensionsVersion.push("1.0.0");
+                    }
+                }
+                if (installedExtensions.includes(this.extension.extensionId)) {
                     this.cardStatus = 'INSTALLED'
                 } else {
+                    // 比较版本
+                    let version = installedExtensionsVersion[installedExtensions.indexOf(this.extension.extensionId)];
+                    if (this.versionCompare(version, this.extension.version) < 0) {
+                        this.cardStatus = 'INSTALLED'
+                    } else {
+                        this.cardStatus = 'UPGRADE'
+                    }
                     this.cardStatus = 'NOTINSTALL'
                 }
             } else if (event.data.action === 'addSuccess' && event.data.extensionId === this.extension.extensionId) {
@@ -91,11 +112,28 @@ export default {
                 download: this.isCommunity ? `${location.origin}${location.pathname}api/getExtensionById?id=${this.extension.extensionId}&version=${this.extension.version}` : `${location.origin}${location.pathname}extension/${this.extension.filename}`
             });
         },
+        handleUpgrade() {
+            this.cardStatus = 'INSTALLING'
+            this.extensionChannel.postMessage({
+                action: 'upd',
+                extension: this.extension.extensionId,
+                download: this.isCommunity ? `${location.origin}${location.pathname}api/getExtensionById?id=${this.extension.extensionId}&version=${this.extension.version}` : `${location.origin}${location.pathname}extension/${this.extension.filename}`
+            });
+        },
         handleDownload() {
             const url = document.createElement('a')
             url.download = this.extension.filename
             url.href = `${location.origin}${location.pathname}extension/${this.extension.filename}`
             url.click();
+        },
+        versionCompare(version1, version2) {
+            const v1 = version1.split('.')
+            const v2 = version2.split('.')
+            for (let i = 0; i < v1.length; i++) {
+                if (v1[i] > v2[i]) return 1
+                if (v1[i] < v2[i]) return -1
+            }
+            return 0
         }
     }
 }
