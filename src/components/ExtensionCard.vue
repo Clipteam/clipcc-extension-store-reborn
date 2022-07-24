@@ -90,7 +90,7 @@ export default {
                 } else {
                     // 比较版本
                     let version = installedExtensionsVersion[installedExtensions.indexOf(this.extension.extensionId)];
-                    if (this.versionCompare(version, this.extension.version) < 0) {
+                    if (this.versionCompare(version, this.extension.version) <= 0) {
                         this.cardStatus = 'INSTALLED'
                     } else {
                         this.cardStatus = 'UPGRADE'
