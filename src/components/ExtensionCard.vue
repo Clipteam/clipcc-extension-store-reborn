@@ -86,15 +86,13 @@ export default {
                     }
                 }
                 if (installedExtensions.includes(this.extension.extensionId)) {
-                    this.cardStatus = 'INSTALLED'
-                } else {
-                    // 比较版本
                     let version = installedExtensionsVersion[installedExtensions.indexOf(this.extension.extensionId)];
                     if (this.versionCompare(version, this.extension.version) <= 0) {
                         this.cardStatus = 'INSTALLED'
                     } else {
                         this.cardStatus = 'UPGRADE'
                     }
+                } else {
                     this.cardStatus = 'NOTINSTALL'
                 }
             } else if (event.data.action === 'addSuccess' && event.data.extensionId === this.extension.extensionId) {
@@ -127,6 +125,7 @@ export default {
             url.click();
         },
         versionCompare(version1, version2) {
+            if (!version1 || !version2) return 0
             const v1 = version1.split('.')
             const v2 = version2.split('.')
             for (let i = 0; i < v1.length; i++) {
