@@ -73,7 +73,7 @@ export default {
                     this.isCommunity = true;
                 } 
                 const installedExtensions = [];
-                for (let i = 0; i < event.data.length; i++) {
+                for (let i = 0; i < event.data.data.length; i++) {
                     installedExtensions.push(event.data.data[i].split("@")[0]);
                 }
                 const installedExtensionsVersion = [];
