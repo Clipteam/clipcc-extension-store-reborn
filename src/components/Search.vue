@@ -49,7 +49,7 @@ export default {
     transition: .2s;
     height: 2.5rem;
     background-color: transparent;
-    -webkit-appearance: none;
+        appearance: none;
     outline: none;
     border: 0;
     background-color: transparent;

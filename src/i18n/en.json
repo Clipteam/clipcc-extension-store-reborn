@@ -12,6 +12,7 @@
     "extension-install-fail-title": "Install failed",
     "extension-install-fail": "Extension \"{extension}\" install failed!",
     "error-detail": "Error Detail",
+    "add-extension": "Add extension",
     "loadfail": "load failed",
     "nodescription": "No description.",
     "search": "Search",

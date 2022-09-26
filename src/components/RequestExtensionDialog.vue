@@ -6,9 +6,7 @@
         <template #title>
             如何向扩展商店添加扩展？
         </template>
-        <h3>你可以通过以下几种方式将你的扩展添加至商店</h3>
-        <p>1. QQ群内私聊群主添加</p>
-        <p>2. 发送邮箱至xxxx@gmail.com</p>
+        <span>请加入ClipCC官方交流群（加群链接在编辑器关于内），联系群内管理添加</span>
     </Dialog>
 </template>
 <script>

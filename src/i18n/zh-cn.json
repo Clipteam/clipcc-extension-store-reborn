@@ -12,6 +12,7 @@
     "extension-install-fail-title": "安装失败",
     "extension-install-fail": "扩展“{extension}”安装失败",
     "error-detail": "错误详情",
+    "add-extension": "添加扩展",
     "loadfail": "加载失败",
     "nodescription": "该扩展还没有描述",
     "search": "搜索",

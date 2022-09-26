@@ -1,11 +1,11 @@
 <template>
-    <menu-bar />
+    <menu-bar v-model='searchData' />
     <!-- <v-alert type="warning" v-if="!opener">{{ t('notopener') }}</v-alert> -->
     <div class="container">
         <h1 v-if="loadingStatus === 'LOADING'">{{ t('loading') }}</h1>
         <h1 v-else-if="loadingStatus === 'ERROR'">{{ t('loadfail') }}</h1>
         <div class="grid">
-            <extension-card v-for="item in extension" :key="item.id" :extension="item" />
+            <extension-card v-for="item in getSearchExtension()" :key="item.id" :extension="item" />
         </div>
     </div>
 </template>
@@ -44,9 +44,21 @@ export default {
                 this.loadingStatus = 'ERROR';
             })
     },
+    methods: {
+        getSearchExtension() {
+            return this.extension.filter((val) => {
+                console.log(val.name.indexOf(this.searchData))
+                console.log(val.name)
+                if (val.name.toLowerCase().indexOf(this.searchData) > -1) {
+                    return val
+                }
+            })
+        }
+    },
     data: () => ({
         opener: window.opener,
         loadingStatus: 'LOADING',
+        searchData: '',
         extension: []
     }),
 }
