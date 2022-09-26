@@ -72,11 +72,11 @@ export default {
                 if (event.data.isCommunity) {
                     this.isCommunity = true;
                 } 
-                installedExtensions = [];
+                const installedExtensions = [];
                 for (let i = 0; i < event.data.installedExtensions.length; i++) {
                     installedExtensions.push(event.data.installedExtensions[i].split("@")[0]);
                 }
-                installedExtensionsVersion = [];
+                const installedExtensionsVersion = [];
                 for (let i = 0; i < event.data.installedExtensions.length; i++) {
                     let version = event.data.installedExtensions[i].split("@")[1];
                     if (version != "") {
