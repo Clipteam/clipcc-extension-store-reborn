@@ -73,12 +73,12 @@ export default {
                     this.isCommunity = true;
                 } 
                 const installedExtensions = [];
-                for (let i = 0; i < event.data.installedExtensions.length; i++) {
-                    installedExtensions.push(event.data.installedExtensions[i].split("@")[0]);
+                for (let i = 0; i < event.data.length; i++) {
+                    installedExtensions.push(event.data.data[i].split("@")[0]);
                 }
                 const installedExtensionsVersion = [];
-                for (let i = 0; i < event.data.installedExtensions.length; i++) {
-                    let version = event.data.installedExtensions[i].split("@")[1];
+                for (let i = 0; i < event.data.data.length; i++) {
+                    let version = event.data.data[i].split("@")[1];
                     if (version != "") {
                         installedExtensionsVersion.push(version);
                     } else {
