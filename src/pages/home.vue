@@ -47,7 +47,7 @@ export default {
     methods: {
         getSearchExtension() {
             return this.extension.filter((val) => {
-                if (val.name.toLowerCase().indexOf(this.searchData) > -1) {
+                if (val.name.toLowerCase().indexOf(this.searchData.toLowerCase()) > -1) {
                     return val
                 }
             })
