@@ -1,4 +1,5 @@
 import { defineConfig } from 'vite'
+import legacy from '@vitejs/plugin-legacy'
 import vue from '@vitejs/plugin-vue'
 import vueI18n from '@intlify/vite-plugin-vue-i18n'
 
@@ -19,6 +20,10 @@ export default defineConfig({
     vue(),
     vueI18n({
       include: path.resolve(__dirname, './src/i18n/**')
+    }),
+    legacy({
+      targets: ['defaults'],
+      polyfills: ['es.promise.finally', 'es/map', 'es/set']
     })
   ],
   define: { 'process.env': {} },
