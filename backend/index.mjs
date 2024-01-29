@@ -21,7 +21,7 @@ app.set('trust proxy', 'loopback');
 app.disable('x-powered-by');
 app.use(cors())
 app.use(express.static('./dist'));
-app.use('/extension', express.static('./extension'));
+app.use('/extension', express.static('./data/extension'));
 
 
 app.get('/api/getExtension', getExtension);

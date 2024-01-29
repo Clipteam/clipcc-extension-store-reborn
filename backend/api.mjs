@@ -8,7 +8,7 @@ import bcrypt from 'bcrypt';
 let db;
 (async () => {
     db = await open({
-      filename: './database.sqlite3',
+      filename: './data/database.sqlite3',
       driver: sqlite3.Database
     })
 })()
@@ -35,12 +35,12 @@ export async function getExtensionById(req, res) {
     const data = await db.get('SELECT * FROM extension WHERE extensionId = ?', req.query.id)
     if (!data) return res.status(404).json({'error': 'extension not found'})
     if (data.community == 'false') return res.status(403).json({'error': 'extension unavailable by community version'})
-    const ext = path.resolve('extension', `${req.query.id}@${req.query.version}.ccx`);
+    const ext = path.resolve('data/extension', `${req.query.id}@${req.query.version}.ccx`);
     
     try {
         await fs.stat(ext)
     } catch {
-        return res.status(404).json({error: 'version not found!!!1'})
+        return res.status(404).json({error: 'version not found!!!'})
     }
     return res.sendFile(ext);
 }
@@ -79,14 +79,14 @@ export async function saveExtension(req, res) {
     }
     if (file) {
         const name = `${body.extensionId}@${body.version}.ccx`;
-        await fs.writeFile(`extension/${name}`, file[0].buffer)
+        await fs.writeFile(`data/extension/${name}`, file[0].buffer)
         await db.run('UPDATE extension SET filename = ? WHERE id = ?',
             name,
             body.id
         )
     }
     if (icon) {
-        await fs.writeFile(`extension/image/${body.extensionId}.png`, icon[0].buffer)
+        await fs.writeFile(`data/extension/image/${body.extensionId}.png`, icon[0].buffer)
         await db.run('UPDATE extension SET image = ? WHERE id = ?',
             `${body.extensionId}.png`,
             body.id
